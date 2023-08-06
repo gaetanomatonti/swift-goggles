@@ -1,8 +1,7 @@
 //
-//  CIImage+Extensions.swift
-//  
+// Goggles
 //
-//  Created by Gaetano Matonti on 06/08/23.
+// Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
 import CoreImage
