@@ -39,6 +39,12 @@ public struct CameraView: View {
         self.image = image
       }
     }
+    .onAppear {
+      camera.startSession()
+    }
+    .onDisappear {
+      camera.stopSession()
+    }
   }
 }
 

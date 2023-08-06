@@ -41,6 +41,13 @@ public final class Camera: NSObject {
 
   /// Adds the specified `Image` to the video stream.
   private var addToStream: ((Image) -> Void)?
+  
+  // MARK: - Computed Properties
+
+  /// The device used for the capture session.
+  private var captureDevice: AVCaptureDevice? {
+    AVCaptureDevice.default(for: .video)
+  }
 
   // MARK: - Init
 
@@ -49,32 +56,43 @@ public final class Camera: NSObject {
     self.visionRequests = visionRequests
     
     super.init()
-    setup()
   }
   
   // MARK: - Functions
-  
-  private func setup() {
-    #if !targetEnvironment(simulator)
-    do {
-      try setupCaptureSession()
-      startSession()
-    } catch {
-      logger.critical("Failed to setup camera with error: \(error, privacy: .public)")
+    
+  /// Starts the capture session.
+  func startSession() {
+    if captureSession.inputs.isEmpty {
+      do {
+        try setupCaptureSession()
+      } catch {
+        logger.error("Failed to configure capture session. \(error.localizedDescription)")
+        return
+      }
     }
-    #endif
+
+    captureSessionQueue.async { [captureSession] in
+      captureSession.startRunning()
+    }
   }
   
+  /// Stops the capture session.
+  func stopSession() {
+    captureSessionQueue.async { [captureSession] in
+      captureSession.stopRunning()
+    }
+  }
+
   /// Sets up the capture session.
   private func setupCaptureSession() throws {
-    guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
+    guard let captureDevice else {
       return
     }
         
-    if videoCaptureDevice.isFocusModeSupported(.continuousAutoFocus) {
-      try videoCaptureDevice.lockForConfiguration()
-      videoCaptureDevice.focusMode = .continuousAutoFocus
-      videoCaptureDevice.unlockForConfiguration()
+    if captureDevice.isFocusModeSupported(.continuousAutoFocus) {
+      try captureDevice.lockForConfiguration()
+      captureDevice.focusMode = .continuousAutoFocus
+      captureDevice.unlockForConfiguration()
     }
     
     captureSession.beginConfiguration()
@@ -83,7 +101,7 @@ public final class Camera: NSObject {
       captureSession.commitConfiguration()
     }
     
-    let videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+    let videoInput = try AVCaptureDeviceInput(device: captureDevice)
     let videoOutput = AVCaptureVideoDataOutput()
         
     guard
@@ -98,27 +116,13 @@ public final class Camera: NSObject {
     captureSession.addInput(videoInput)
     captureSession.addOutput(videoOutput)
     
-    if let connection = videoOutput.connection(with: .video) {
+    if let connection = videoOutput.connection(with: captureDevice.activeFormat.mediaType) {
       // Force portrait orientation.
       // Use `AVCaptureDevice.RotationCoordinator` to observe changes in orientation.
       let rotationAngle: CGFloat = 90
       if connection.isVideoRotationAngleSupported(rotationAngle) {
         connection.videoRotationAngle = rotationAngle
       }
-    }
-  }
-  
-  /// Starts the capture session.
-  private func startSession() {
-    captureSessionQueue.async { [captureSession] in
-      captureSession.startRunning()
-    }
-  }
-  
-  /// Stops the capture session.
-  private func stopSession() {
-    captureSessionQueue.async { [captureSession] in
-      captureSession.stopRunning()
     }
   }
 }
