@@ -61,7 +61,7 @@ public final class Camera: NSObject {
   // MARK: - Functions
     
   /// Starts the capture session.
-  func startSession() {
+  public func startCapture() {
     if captureSession.inputs.isEmpty {
       do {
         try setupCaptureSession()
@@ -70,6 +70,11 @@ public final class Camera: NSObject {
         return
       }
     }
+    
+    guard !captureSession.isRunning else {
+      logger.error("Capture session already running.")
+      return
+    }
 
     captureSessionQueue.async { [captureSession] in
       captureSession.startRunning()
@@ -77,7 +82,12 @@ public final class Camera: NSObject {
   }
   
   /// Stops the capture session.
-  func stopSession() {
+  public func stopCapture() {
+    guard captureSession.isRunning else {
+      logger.error("Capture session is not running.")
+      return
+    }
+
     captureSessionQueue.async { [captureSession] in
       captureSession.stopRunning()
     }
@@ -86,6 +96,7 @@ public final class Camera: NSObject {
   /// Sets up the capture session.
   private func setupCaptureSession() throws {
     guard let captureDevice else {
+      logger.notice("Capture device not found.")
       return
     }
         

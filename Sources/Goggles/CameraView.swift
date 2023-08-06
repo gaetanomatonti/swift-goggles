@@ -7,10 +7,12 @@
 #if canImport(SwiftUI)
 import SwiftUI
 
+/// A view that displays the frames of a video stream.
 public struct CameraView: View {
   
   // MARK: - Stored Properties
   
+  /// The current video frame.
   @State private var image: Image?
   
   /// The object that manages connection to the device camera and outputs a stream of images.
@@ -18,6 +20,9 @@ public struct CameraView: View {
   
   // MARK: - Init
   
+  /// Creates a view that displays a video stream.
+  /// - Parameter camera: The object that manages connection to the device camera and outputs a stream of images.
+  ///                     Defaults to an instance that only streams video frames.
   public init(camera: Camera = Camera()) {
     self.camera = camera
   }
@@ -40,10 +45,10 @@ public struct CameraView: View {
       }
     }
     .onAppear {
-      camera.startSession()
+      camera.startCapture()
     }
     .onDisappear {
-      camera.stopSession()
+      camera.stopCapture()
     }
   }
 }
