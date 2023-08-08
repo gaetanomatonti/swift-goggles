@@ -25,7 +25,7 @@ public final class Camera: NSObject {
   }()
   
   /// The list of vision requests to process.
-  private let visionRequests: [VNRequest]
+  private var visionRequests: Set<VNRequest>
   
   /// The session managing the capture of the device.
   private let captureSession = AVCaptureSession()
@@ -52,7 +52,7 @@ public final class Camera: NSObject {
   // MARK: - Init
 
   /// Creates an instance of the `Camera` object
-  public init(visionRequests: [VNRequest] = []) {
+  public init(visionRequests: Set<VNRequest> = []) {
     self.visionRequests = visionRequests
     
     super.init()
@@ -91,6 +91,18 @@ public final class Camera: NSObject {
     captureSessionQueue.async { [captureSession] in
       captureSession.stopRunning()
     }
+  }
+  
+  /// Adds a Vision request to process.
+  /// - Parameter request: The request to process.
+  public func add(_ request: VNRequest) {
+    visionRequests.insert(request)
+  }
+  
+  /// Removes the specified vision from processing.
+  /// - Parameter request: The request to stop processing.
+  public func remove(_ request: VNRequest) {
+    visionRequests.remove(request)
   }
 
   /// Sets up the capture session.
@@ -146,7 +158,7 @@ extension Camera: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     if !visionRequests.isEmpty {
       let visionRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer)
-      try? visionRequestHandler.perform(visionRequests)
+      try? visionRequestHandler.perform(Array(visionRequests))
     }
     
     if let image = CIImage(cvPixelBuffer: pixelBuffer).image {
