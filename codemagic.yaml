@@ -1,8 +1,10 @@
 workflows:
   test: 
-    name: Test
+    name: Build
     environment:
-      xcode: 15.0
+      groups:
+        - Xcode
+      xcode: $XCODE_VERSION
     triggering:
       events:
         - push
@@ -17,4 +19,6 @@ workflows:
       cancel_previous_builds: true
     scripts:
       - name: Build
-        script: swift build
+        script: xcodebuild build \
+          -scheme "$XCODE_SCHEME" \
+          -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=17.0'
