@@ -16,7 +16,7 @@ public final class Camera: NSObject {
   // MARK: - Stored Properties
   
   /// The stream of video frames.
-  public lazy var stream: AsyncStream<Image> = {
+  lazy var stream: AsyncStream<Image> = {
     AsyncStream { [weak self] continuation in
       self?.addToStream = { image in
         continuation.yield(image)
