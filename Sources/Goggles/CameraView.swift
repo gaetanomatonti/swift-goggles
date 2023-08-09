@@ -4,7 +4,6 @@
 // Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
-#if canImport(SwiftUI)
 import SwiftUI
 
 /// A view that displays the frames of a video stream.
@@ -58,4 +57,3 @@ public struct CameraView: View {
 #Preview {
   CameraView()
 }
-#endif
