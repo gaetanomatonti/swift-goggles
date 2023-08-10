@@ -61,7 +61,7 @@ public extension CaptureAuthorization {
   ///
   /// This object returns a `.authorized` status and authorization request always succeeds.
   static let mockWithAuthorizedStatus = CaptureAuthorization { _ in
-      .authorized
+    .authorized
   } requestAuthorization: { _ in
     true
   }
@@ -70,7 +70,7 @@ public extension CaptureAuthorization {
   ///
   /// This object returns a `.restricted` status and authorization request always fails.
   static let mockWithRestrictedStatus = CaptureAuthorization { _ in
-      .restricted
+    .restricted
   } requestAuthorization: { _ in
     false
   }
@@ -79,7 +79,7 @@ public extension CaptureAuthorization {
   ///
   /// This object returns a `.notDetermined` status and authorization request always fails.
   static let mockWithNotDeterminedStatus = CaptureAuthorization { _ in
-      .notDetermined
+    .notDetermined
   } requestAuthorization: { _ in
     false
   }
@@ -88,7 +88,7 @@ public extension CaptureAuthorization {
   ///
   /// This object returns a `.denied` status and authorization request always fails.
   static let mockWithDeniedStatus = CaptureAuthorization { _ in
-      .denied
+    .denied
   } requestAuthorization: { _ in
     false
   }
