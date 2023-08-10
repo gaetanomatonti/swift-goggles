@@ -4,7 +4,6 @@
 // Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
-#if canImport(SwiftUI)
 import AVFoundation
 import OSLog
 import SwiftUI
@@ -166,4 +165,3 @@ extension Camera: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
   }
 }
-#endif
