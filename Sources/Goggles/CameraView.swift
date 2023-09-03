@@ -4,11 +4,13 @@
 // Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
+#if !os(visionOS)
 import SwiftUI
 
 /// A view that displays the frames of a video stream.
+@available(iOS 17.0, *)
 public struct CameraView: View {
-  
+
   // MARK: - Stored Properties
   
   /// The current video frame.
@@ -57,3 +59,4 @@ public struct CameraView: View {
 #Preview {
   CameraView()
 }
+#endif

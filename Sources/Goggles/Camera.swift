@@ -4,12 +4,14 @@
 // Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
+#if !os(visionOS)
 import AVFoundation
 import OSLog
 import SwiftUI
 import Vision
 
 /// The object that manages connection to the device camera and outputs a stream of images.
+@available(iOS 17.0, *)
 public final class Camera: NSObject {
   
   // MARK: - Stored Properties
@@ -165,3 +167,4 @@ extension Camera: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
   }
 }
+#endif

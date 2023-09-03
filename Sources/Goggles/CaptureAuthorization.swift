@@ -4,11 +4,12 @@
 // Copyright © 2023 Gaetano Matonti. All rights reserved.
 //
 
+#if !os(visionOS)
 import AVFoundation
 
 /// An object that manages authorization requests to capture devices.
 public struct CaptureAuthorization {
-  
+
   // MARK: - Stored Properties
   
   /// Requests the authorization status for the specified `AVMediaType`.
@@ -16,7 +17,7 @@ public struct CaptureAuthorization {
   
   /// The authorization status for the specified `AVMediaType`.
   public var authorizationStatus: (AVMediaType) -> AVAuthorizationStatus
-  
+
   /// Requests the authorization status for the `.video` media type.
   ///
   /// Use this function to request the authorization status for the `Camera` object.
@@ -93,3 +94,4 @@ public extension CaptureAuthorization {
     false
   }
 }
+#endif
